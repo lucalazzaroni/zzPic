@@ -1,3 +1,4 @@
+import AVFoundation
 import Foundation
 import ImageIO
 import UniformTypeIdentifiers
@@ -6,7 +7,7 @@ public enum ImageSortOrder: String, CaseIterable, Sendable {
     case name, dateModified, size
 }
 
-/// Lists the images contained in a folder, in Finder-like order.
+/// Lists the images and videos contained in a folder, in Finder-like order.
 public enum FolderScanner {
     private static let readableIdentifiers: Set<String> =
         Set((CGImageSourceCopyTypeIdentifiers() as? [String]) ?? [])
@@ -19,14 +20,35 @@ public enum FolderScanner {
         return readableTypes.contains { type.conforms(to: $0) }
     }
 
-    public static func isImageFile(_ url: URL) -> Bool {
-        let type = (try? url.resourceValues(forKeys: [.contentTypeKey]))?.contentType
-            ?? UTType(filenameExtension: url.pathExtension)
-        guard let type else { return false }
-        return isReadableImageType(type)
+    private static let playableIdentifiers: Set<String> = Set(AVURLAsset.audiovisualTypes().map(\.rawValue))
+    private static let playableTypes: [UTType] = playableIdentifiers.compactMap { UTType($0) }.filter { $0.conforms(to: .movie) }
+
+    /// `true` for video formats AVFoundation can play (audio-only files are excluded).
+    public static func isPlayableVideoType(_ type: UTType) -> Bool {
+        guard type.conforms(to: .movie), !type.conforms(to: .audio) || type.conforms(to: .video) else { return false }
+        if playableIdentifiers.contains(type.identifier) { return true }
+        return playableTypes.contains { type.conforms(to: $0) }
     }
 
-    /// Returns every readable, non-hidden image in `folder`.
+    private static func contentType(of url: URL) -> UTType? {
+        (try? url.resourceValues(forKeys: [.contentTypeKey]))?.contentType ?? UTType(filenameExtension: url.pathExtension)
+    }
+
+    public static func isImageFile(_ url: URL) -> Bool {
+        contentType(of: url).map(isReadableImageType) ?? false
+    }
+
+    public static func isVideoFile(_ url: URL) -> Bool {
+        contentType(of: url).map(isPlayableVideoType) ?? false
+    }
+
+    /// An image or a video zzPic can show.
+    public static func isMediaFile(_ url: URL) -> Bool {
+        guard let type = contentType(of: url) else { return false }
+        return isReadableImageType(type) || isPlayableVideoType(type)
+    }
+
+    /// Returns every readable, non-hidden image and video in `folder`.
     public static func scan(folder: URL, sortedBy order: ImageSortOrder) -> [URL] {
         let keys: [URLResourceKey] = [.contentTypeKey, .isRegularFileKey, .contentModificationDateKey, .fileSizeKey]
         guard let items = try? FileManager.default.contentsOfDirectory(
@@ -42,7 +64,7 @@ public enum FolderScanner {
             guard let values = try? url.resourceValues(forKeys: Set(keys)),
                   values.isRegularFile == true,
                   let type = values.contentType,
-                  isReadableImageType(type) else { continue }
+                  isReadableImageType(type) || isPlayableVideoType(type) else { continue }
             entries.append(Entry(url: url,
                                  name: url.lastPathComponent,
                                  date: values.contentModificationDate ?? .distantPast,

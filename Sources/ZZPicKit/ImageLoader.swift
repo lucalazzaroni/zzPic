@@ -1,4 +1,5 @@
 import AppKit
+import AVFoundation
 import ImageIO
 
 /// A decoded image ready to be displayed (already rotated according to its EXIF orientation).
@@ -200,6 +201,11 @@ public final class ThumbnailProvider: @unchecked Sendable {
     public func thumbnail(for url: URL, maxPixelSize: Int = 200) async -> CGImage? {
         let key = url.fileKey as NSString
         if let hit = cache.object(forKey: key) { return hit }
+        if FolderScanner.isVideoFile(url) {
+            let image = await Self.videoThumbnail(url, maxPixelSize: maxPixelSize)
+            if let image { cache.setObject(image, forKey: key) }
+            return image
+        }
         return await withCheckedContinuation { continuation in
             queue.addOperation { [cache] in
                 let image = Self.makeThumbnail(url, maxPixelSize: maxPixelSize)
@@ -207,6 +213,19 @@ public final class ThumbnailProvider: @unchecked Sendable {
                 continuation.resume(returning: image)
             }
         }
+    }
+
+    /// A frame from the first second of a video.
+    public static func videoThumbnail(_ url: URL, maxPixelSize: Int) async -> CGImage? {
+        let asset = AVURLAsset(url: url)
+        let generator = AVAssetImageGenerator(asset: asset)
+        generator.appliesPreferredTrackTransform = true
+        generator.maximumSize = CGSize(width: maxPixelSize, height: maxPixelSize)
+        generator.requestedTimeToleranceBefore = .positiveInfinity
+        generator.requestedTimeToleranceAfter = .positiveInfinity
+        let duration = (try? await asset.load(.duration)).map(CMTimeGetSeconds) ?? 0
+        let seconds = duration.isFinite ? min(1, duration / 3) : 0
+        return try? await generator.image(at: CMTime(seconds: seconds, preferredTimescale: 600)).image
     }
 
     public func invalidate(_ url: URL) {

@@ -11,7 +11,8 @@ struct FilmstripView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 8) {
                     ForEach(Array(model.files.enumerated()), id: \.element) { index, url in
-                        ThumbnailCell(url: url, isSelected: index == model.index, revision: model.revision(of: url))
+                        ThumbnailCell(url: url, isSelected: index == model.index, revision: model.revision(of: url),
+                                      isVideo: FolderScanner.isVideoFile(url))
                             .id(url)
                             .onTapGesture { select(index) }
                     }
@@ -43,6 +44,7 @@ struct ThumbnailCell: View {
     let url: URL
     let isSelected: Bool
     let revision: Int
+    let isVideo: Bool
 
     @State private var image: CGImage?
     @State private var hovering = false
@@ -63,6 +65,16 @@ struct ThumbnailCell: View {
             }
         }
         .frame(width: side, height: side)
+        .overlay(alignment: .bottomLeading) {
+            if isVideo {
+                Image(systemName: "play.fill")
+                    .font(.system(size: 8, weight: .bold))
+                    .foregroundStyle(.white)
+                    .frame(width: 17, height: 17)
+                    .background(.black.opacity(0.5), in: Circle())
+                    .padding(4)
+            }
+        }
         .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 9, style: .continuous)

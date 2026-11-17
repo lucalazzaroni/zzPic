@@ -45,17 +45,7 @@ extension ViewerWindowController {
     @objc func toggleInspector(_ sender: Any?) {
         model.showInspector.toggle()
         if model.showInspector { model.metadata = [] }
-        // The canvas resizes with the panel; reload details for the current image.
-        DispatchQueue.main.async { [weak self] in self?.reloadMetadataIfVisible() }
-    }
-
-    private func reloadMetadataIfVisible() {
-        guard model.showInspector, let url = model.current else { return }
-        Task { [weak self] in
-            let sections = await Task.detached(priority: .utility) { ImageMetadata.sections(for: url) }.value
-            guard let self, self.model.current?.isSameFile(as: url) == true else { return }
-            self.model.metadata = sections
-        }
+        loadMetadata()
     }
 
     @objc func changeSortOrder(_ sender: NSMenuItem) {
@@ -262,16 +252,19 @@ extension ViewerWindowController {
     }
 
     @objc func openInPreview(_ sender: Any?) {
+        let editor = model.currentIsVideo ? "com.apple.QuickTimePlayerX" : "com.apple.Preview"
         guard let url = model.current,
-              let preview = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.Preview") else { return }
-        NSWorkspace.shared.open([url], withApplicationAt: preview, configuration: NSWorkspace.OpenConfiguration())
+              let app = NSWorkspace.shared.urlForApplication(withBundleIdentifier: editor) else { return }
+        if model.currentIsVideo { canvas.stopVideo() }
+        NSWorkspace.shared.open([url], withApplicationAt: app, configuration: NSWorkspace.OpenConfiguration())
     }
 
     @objc func copy(_ sender: Any?) {
         guard let url = model.current else { return }
         let item = NSPasteboardItem()
         item.setString(url.absoluteString, forType: .fileURL)
-        if let type = UTType(filenameExtension: url.pathExtension), let data = try? Data(contentsOf: url) {
+        if !model.currentIsVideo, let type = UTType(filenameExtension: url.pathExtension),
+           let data = try? Data(contentsOf: url) {
             item.setData(data, forType: NSPasteboard.PasteboardType(type.identifier))
         }
         if let image = model.currentImage?.image {
@@ -337,6 +330,9 @@ extension ViewerWindowController: NSMenuItemValidation, NSToolbarItemValidation 
         case #selector(toggleCrop(_:)):
             item.title = model.isCropping ? L("Cancel Crop") : L("Crop…")
             return canPerform(item.action)
+        case #selector(openInPreview(_:)):
+            item.title = model.currentIsVideo ? L("Open in QuickTime Player") : L("Edit in Preview")
+            return canPerform(item.action)
         case #selector(changeSortOrder(_:)):
             item.state = (item.representedObject as? String) == sortOrder.rawValue ? .on : .off
             return !model.isCropping
@@ -364,8 +360,10 @@ extension ViewerWindowController: NSMenuItemValidation, NSToolbarItemValidation 
             return cropping || (model.canEdit && !model.isBusy)
         case #selector(resizeImage(_:)):
             return model.canEdit && !cropping && !model.isBusy
+        case #selector(printImage(_:)):
+            return model.currentImage != nil && !cropping
         case #selector(duplicateImage(_:)), #selector(moveToTrash(_:)), #selector(showInFinder(_:)),
-             #selector(openInPreview(_:)), #selector(printImage(_:)), #selector(copy(_:)):
+             #selector(openInPreview(_:)), #selector(copy(_:)):
             return hasFile && !cropping
         case #selector(toggleInspector(_:)):
             return true

@@ -5,7 +5,7 @@
 <h1 align="center">zzPic</h1>
 
 <p align="center">
-  <b>Open a picture, then flip through every image in its folder with ← →.</b><br>
+  <b>Open a picture, then flip through every photo and video in its folder with ← →.</b><br>
   A fast, minimal image viewer for macOS — the one thing Preview doesn't do.
 </p>
 
@@ -30,6 +30,7 @@ everyday jobs, and **Preview one shortcut away** (`⌘E`) for everything else.
 ## Features
 
 - **Browse the folder** — `←` `→` (or a two-finger swipe, or the mouse wheel), `Home` / `End`, with a thumbnail filmstrip at the bottom. Neighbouring images are decoded in advance, so flipping is instant.
+- **Videos too** — MOV, MP4 and M4V play right in the viewer (`Space` to play/pause) and sit in the filmstrip alongside your photos, so a folder from your phone browses as one roll.
 - **Zoom & pan** — pinch, `⌘+` / `⌘−`, double-click to toggle *Fit* ⇄ *100 %*, drag to pan.
 - **Rotate** — `⌘L` / `⌘R`. For JPEG, HEIC and TIFF it's **lossless**: only the orientation flag changes, the pixels are never re-compressed.
 - **Crop** — `⌘K`, with Freeform, Original, Square, 4:3, 3:2 and 16:9 ratios (portrait or landscape) and a rule-of-thirds grid.
@@ -37,10 +38,10 @@ everyday jobs, and **Preview one shortcut away** (`⌘E`) for everything else.
 - **Save or Save as Copy** — every edit can overwrite the file or create `name copy.jpg` next to it. Format and metadata (EXIF, GPS, colour profile) are preserved.
 - **Duplicate** (`⌘D`), **Move to Trash** (`⌘⌫` or just `⌫`), **Copy** (`⌘C`), **Print** (`⌘P`), **Share**, **Show in Finder** (`⌥⌘R`).
 - **Undo everything** — `⌘Z` restores overwritten files, brings trashed photos back and removes copies. Redo works too.
-- **Info panel** (`⌘I`) — dimensions, file details, camera, lens, exposure, and location with a link to Maps.
-- **Edit in Preview** (`⌘E`) for markup, colour adjustments and everything else. zzPic notices when the file changes and reloads it.
+- **Info panel** (`⌘I`) — dimensions, file details, camera, lens, exposure, location with a link to Maps; duration, frame rate and codec for videos.
+- **Edit in Preview** (`⌘E`) for markup, colour adjustments and everything else (videos open in QuickTime Player). zzPic notices when the file changes and reloads it.
 - Animated GIFs, HEIC, RAW, WebP, PNG, TIFF… anything macOS can read. Drag a photo out of the window to Finder or Mail, drop files or folders in.
-- Native AppKit + SwiftUI, light & dark mode, **English and Italian**. No tracking, no network access, no dependencies.
+- Native AppKit + SwiftUI with the current macOS design (Liquid Glass on macOS 26), light & dark mode, **English and Italian**. No tracking, no network access, no dependencies.
 
 <p align="center">
   <img src="docs/screenshot-crop.png" width="410" alt="Cropping with a square ratio">
@@ -86,6 +87,7 @@ Repeat for the other formats you use (`.png`, `.heic`, …).
 | Info panel | `⌘I` | | Edit in Preview | `⌘E` |
 | Full screen | `⌃⌘F` | | Show in Finder | `⌥⌘R` |
 | Open | `⌘O` | | Print | `⌘P` |
+| Play / pause video | `Space` | | | |
 
 While cropping: `↩` crops, `Esc` cancels.
 
@@ -123,7 +125,7 @@ New UI strings go through `L("…")` and need an entry in `Resources/it.lproj/Lo
 <summary>🇮🇹 <b>In italiano</b></summary>
 
 **zzPic** è un visualizzatore di immagini per macOS pensato per una cosa sola: apri una foto e
-scorri tutte le altre della stessa cartella con le frecce, come su Windows. Include le modifiche
+scorri tutte le altre foto e i video della stessa cartella con le frecce, come su Windows. Include le modifiche
 di tutti i giorni — ruota (senza perdita di qualità per JPEG/HEIC), ritaglia, ridimensiona,
 duplica, sposta nel Cestino, stampa — tutte annullabili con `⌘Z`. Per il resto c'è
 **Modifica in Anteprima** (`⌘E`). L'interfaccia è in italiano se il Mac è in italiano.

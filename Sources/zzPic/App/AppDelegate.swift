@@ -144,11 +144,11 @@ enum OpenPanel {
     @MainActor
     static func run(attachedTo window: NSWindow?, completion: @escaping ([URL]) -> Void) {
         let panel = NSOpenPanel()
-        panel.allowedContentTypes = [.image, .folder]
+        panel.allowedContentTypes = [.image, .movie, .folder]
         panel.canChooseFiles = true
         panel.canChooseDirectories = true
         panel.allowsMultipleSelection = false
-        panel.message = L("Choose an image, or a folder of images")
+        panel.message = L("Choose an image or video, or a folder")
         panel.prompt = L("Open")
         let handler: (NSApplication.ModalResponse) -> Void = { response in
             if response == .OK { completion(panel.urls) }

@@ -27,6 +27,17 @@ echo "▸ Assembling $APP"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 lipo -create "${binaries[@]}" -output "$APP/Contents/MacOS/zzPic"
+
+# SwiftPM records the deployment target (14.0) as the "built with" SDK version, which makes
+# macOS 26+ run the app in compatibility mode (old small window buttons, no Liquid Glass).
+# Stamp the real SDK version so the system uses the current design.
+SDK_VERSION=$(xcrun --sdk macosx --show-sdk-version)
+MIN_VERSION=$(sed -nE 's/.*\.macOS\(\.v([0-9]+)\).*/\1.0/p' Package.swift)
+for arch in $ARCHS; do
+  xcrun vtool -arch "$arch" -set-build-version macos "$MIN_VERSION" "$SDK_VERSION" -replace \
+    -output "$APP/Contents/MacOS/zzPic.tmp" "$APP/Contents/MacOS/zzPic" 2>/dev/null
+  mv "$APP/Contents/MacOS/zzPic.tmp" "$APP/Contents/MacOS/zzPic"
+done
 sed -e "s/__VERSION__/$VERSION/g" -e "s/__BUILD__/$BUILD/g" Resources/Info.plist > "$APP/Contents/Info.plist"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/"
 cp -R Resources/*.lproj "$APP/Contents/Resources/"

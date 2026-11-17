@@ -55,6 +55,18 @@
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
+			<string>Video</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.movie</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
 			<string>Folder</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
@@ -67,14 +79,14 @@
 		</dict>
 	</array>
 	<key>NSDesktopFolderUsageDescription</key>
-	<string>zzPic lists the other images in the folder so you can browse them.</string>
+	<string>zzPic lists the other photos and videos in the folder so you can browse them.</string>
 	<key>NSDocumentsFolderUsageDescription</key>
-	<string>zzPic lists the other images in the folder so you can browse them.</string>
+	<string>zzPic lists the other photos and videos in the folder so you can browse them.</string>
 	<key>NSDownloadsFolderUsageDescription</key>
-	<string>zzPic lists the other images in the folder so you can browse them.</string>
+	<string>zzPic lists the other photos and videos in the folder so you can browse them.</string>
 	<key>NSRemovableVolumesUsageDescription</key>
-	<string>zzPic lists the other images in the folder so you can browse them.</string>
+	<string>zzPic lists the other photos and videos in the folder so you can browse them.</string>
 	<key>NSNetworkVolumesUsageDescription</key>
-	<string>zzPic lists the other images in the folder so you can browse them.</string>
+	<string>zzPic lists the other photos and videos in the folder so you can browse them.</string>
 </dict>
 </plist>

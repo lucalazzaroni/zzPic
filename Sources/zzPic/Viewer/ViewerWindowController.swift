@@ -82,6 +82,7 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
 
     func windowWillClose(_ notification: Notification) {
         loadTask?.cancel()
+        canvas.stopVideo()
         watcher = nil
         onClose?(self)
     }
@@ -93,10 +94,10 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
         var isDirectory: ObjCBool = false
         guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { return }
 
-        if !isDirectory.boolValue, !FolderScanner.isImageFile(url) {
+        if !isDirectory.boolValue, !FolderScanner.isMediaFile(url) {
             let alert = NSAlert()
-            alert.messageText = LF("“%@” isn’t an image zzPic can open.", url.lastPathComponent)
-            alert.informativeText = L("zzPic opens common image formats such as JPEG, PNG, HEIC, GIF, TIFF, WebP and camera RAW files.")
+            alert.messageText = LF("“%@” isn’t a file zzPic can open.", url.lastPathComponent)
+            alert.informativeText = L("zzPic opens common image formats (JPEG, PNG, HEIC, GIF, TIFF, WebP, camera RAW) and videos (MOV, MP4, M4V).")
             if let window { alert.beginSheetModal(for: window) } else { alert.runModal() }
             return
         }
@@ -139,6 +140,11 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
             return
         }
 
+        if FolderScanner.isVideoFile(url) {
+            presentVideo(url)
+            return
+        }
+
         if let cached = ImageLoader.shared.cachedImage(for: url) {
             present(cached)
             return
@@ -177,11 +183,28 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
         prefetchNeighbours()
     }
 
+    private func presentVideo(_ url: URL) {
+        model.loaded = nil
+        model.loadError = nil
+        canvas.displayVideo(url)
+        updateTitle()
+        loadMetadata()
+        prefetchNeighbours()
+        loadTask = Task { [weak self] in
+            let info = try? await VideoInfo.load(url)
+            guard let self, !Task.isCancelled, self.model.current?.isSameFile(as: url) == true else { return }
+            self.model.video = info
+            self.canvas.setVideoSize(info?.pixelSize)
+            self.updateTitle()
+            self.loadMetadata()
+        }
+    }
+
     private func prefetchNeighbours() {
         let files = model.files
         guard files.count > 1 else { return }
         let n = files.count
-        let neighbours = [1, -1, 2].map { files[(model.index + $0 + n) % n] }
+        let neighbours = [1, -1, 2].map { files[(model.index + $0 + n) % n] }.filter { !FolderScanner.isVideoFile($0) }
         ImageLoader.shared.prefetch(neighbours)
     }
 
@@ -194,6 +217,10 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
             if let image = model.currentImage {
                 parts.append("\(Int(image.pixelSize.width)) × \(Int(image.pixelSize.height))")
                 parts.append(ByteCountFormatter.string(fromByteCount: image.fileSize, countStyle: .file))
+            } else if let video = model.currentVideo {
+                parts.append("\(Int(video.pixelSize.width)) × \(Int(video.pixelSize.height))")
+                parts.append(video.durationText)
+                parts.append(ByteCountFormatter.string(fromByteCount: video.fileSize, countStyle: .file))
             }
             window.subtitle = parts.joined(separator: "  ·  ")
         } else {
@@ -206,11 +233,18 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
         window.toolbar?.validateVisibleItems()
     }
 
-    private func loadMetadata() {
+    func loadMetadata() {
         metadataTask?.cancel()
         guard model.showInspector, let url = model.current else { return }
+        let video = model.currentIsVideo ? model.currentVideo : nil
+        if model.currentIsVideo, video == nil {
+            model.metadata = [ImageMetadata.generalSection(for: url)]   // details follow once loaded
+            return
+        }
         metadataTask = Task { [weak self] in
-            let sections = await Task.detached(priority: .utility) { ImageMetadata.sections(for: url) }.value
+            let sections = await Task.detached(priority: .utility) {
+                video.map(ImageMetadata.sections(for:)) ?? ImageMetadata.sections(for: url)
+            }.value
             guard let self, !Task.isCancelled, self.model.current?.isSameFile(as: url) == true else { return }
             self.model.metadata = sections
         }

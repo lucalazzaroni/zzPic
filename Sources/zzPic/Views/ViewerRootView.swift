@@ -175,7 +175,7 @@ struct EmptyStateView: View {
                 .shadow(color: .black.opacity(0.15), radius: 10, y: 4)
             Text("zzPic")
                 .font(.system(size: 34, weight: .bold, design: .rounded))
-            Text(L("Open a picture to browse every image in its folder."))
+            Text(L("Open a photo or video to browse everything in its folder."))
                 .font(.system(size: 14))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

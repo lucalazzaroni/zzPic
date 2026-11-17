@@ -23,9 +23,6 @@ public struct MetadataSection: Identifiable, Sendable {
 /// Human-readable file and EXIF information for the inspector.
 public enum ImageMetadata {
     public static func sections(for url: URL) -> [MetadataSection] {
-        let values = try? url.resourceValues(forKeys: [
-            .fileSizeKey, .creationDateKey, .contentModificationDateKey, .localizedTypeDescriptionKey,
-        ])
         let source = CGImageSourceCreateWithURL(url as CFURL, nil)
         let props = source.flatMap { CGImageSourceCopyPropertiesAtIndex($0, 0, nil) as? [CFString: Any] } ?? [:]
         let exif = props[kCGImagePropertyExifDictionary] as? [CFString: Any] ?? [:]
@@ -36,18 +33,8 @@ public enum ImageMetadata {
         dates.dateStyle = .medium
         dates.timeStyle = .short
 
-        var sections: [MetadataSection] = []
+        var sections: [MetadataSection] = [generalSection(for: url)]
 
-        // File
-        var file: [MetadataRow] = [MetadataRow(L("Name"), url.lastPathComponent)]
-        if let kind = values?.localizedTypeDescription { file.append(MetadataRow(L("Kind"), kind)) }
-        if let size = values?.fileSize {
-            file.append(MetadataRow(L("Size"), ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file)))
-        }
-        if let created = values?.creationDate { file.append(MetadataRow(L("Created"), dates.string(from: created))) }
-        if let modified = values?.contentModificationDate { file.append(MetadataRow(L("Modified"), dates.string(from: modified))) }
-        file.append(MetadataRow(L("Where"), (url.deletingLastPathComponent().path as NSString).abbreviatingWithTildeInPath))
-        sections.append(MetadataSection(title: L("General"), rows: file))
 
         // Image
         var image: [MetadataRow] = []
@@ -128,5 +115,35 @@ public enum ImageMetadata {
         }
 
         return sections
+    }
+
+    /// Name, kind, size, dates and folder.
+    public static func generalSection(for url: URL) -> MetadataSection {
+        let values = try? url.resourceValues(forKeys: [
+            .fileSizeKey, .creationDateKey, .contentModificationDateKey, .localizedTypeDescriptionKey,
+        ])
+        let dates = DateFormatter()
+        dates.dateStyle = .medium
+        dates.timeStyle = .short
+        var file: [MetadataRow] = [MetadataRow(L("Name"), url.lastPathComponent)]
+        if let kind = values?.localizedTypeDescription { file.append(MetadataRow(L("Kind"), kind)) }
+        if let size = values?.fileSize {
+            file.append(MetadataRow(L("Size"), ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file)))
+        }
+        if let created = values?.creationDate { file.append(MetadataRow(L("Created"), dates.string(from: created))) }
+        if let modified = values?.contentModificationDate { file.append(MetadataRow(L("Modified"), dates.string(from: modified))) }
+        file.append(MetadataRow(L("Where"), (url.deletingLastPathComponent().path as NSString).abbreviatingWithTildeInPath))
+        return MetadataSection(title: L("General"), rows: file)
+    }
+
+    public static func sections(for video: VideoInfo) -> [MetadataSection] {
+        var rows = [
+            MetadataRow(L("Dimensions"), "\(Int(video.pixelSize.width)) × \(Int(video.pixelSize.height))"),
+            MetadataRow(L("Duration"), video.durationText),
+        ]
+        if video.frameRate > 0 { rows.append(MetadataRow(L("Frame Rate"), String(format: "%.3g fps", video.frameRate))) }
+        if let codec = video.codec { rows.append(MetadataRow(L("Codec"), codec)) }
+        rows.append(MetadataRow(L("Audio"), video.hasAudio ? L("Yes") : L("No")))
+        return [generalSection(for: video.url), MetadataSection(title: L("Video"), rows: rows)]
     }
 }

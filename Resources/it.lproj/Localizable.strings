@@ -19,9 +19,10 @@
 "Move to Trash" = "Sposta nel Cestino";
 "Show in Finder" = "Mostra nel Finder";
 "Edit in Preview" = "Modifica in Anteprima";
+"Open in QuickTime Player" = "Apri in QuickTime Player";
 "Print…" = "Stampa…";
 "Print" = "Stampa";
-"Choose an image, or a folder of images" = "Scegli un’immagine o una cartella di immagini";
+"Choose an image or video, or a folder" = "Scegli un’immagine, un video o una cartella";
 "Open" = "Apri";
 
 /* Edit menu */
@@ -87,7 +88,7 @@
 
 /* Empty state */
 "Open Image…" = "Apri immagine…";
-"Open a picture to browse every image in its folder." = "Apri una foto per sfogliare tutte le immagini della sua cartella.";
+"Open a photo or video to browse everything in its folder." = "Apri una foto o un video per sfogliare tutto il contenuto della sua cartella.";
 "or drop an image or a folder here" = "oppure trascina qui un’immagine o una cartella";
 
 /* Crop */
@@ -120,8 +121,8 @@
 "Delete" = "Elimina";
 
 /* Errors */
-"“%@” isn’t an image zzPic can open." = "“%@” non è un’immagine che zzPic può aprire.";
-"zzPic opens common image formats such as JPEG, PNG, HEIC, GIF, TIFF, WebP and camera RAW files." = "zzPic apre i formati più comuni, come JPEG, PNG, HEIC, GIF, TIFF, WebP e i file RAW delle fotocamere.";
+"“%@” isn’t a file zzPic can open." = "zzPic non può aprire “%@”.";
+"zzPic opens common image formats (JPEG, PNG, HEIC, GIF, TIFF, WebP, camera RAW) and videos (MOV, MP4, M4V)." = "zzPic apre i formati di immagine più comuni (JPEG, PNG, HEIC, GIF, TIFF, WebP, RAW delle fotocamere) e i video (MOV, MP4, M4V).";
 "“%@” can’t be opened because it isn’t a supported image." = "Impossibile aprire “%@”: il formato non è supportato.";
 "“%@” could not be saved." = "Impossibile salvare “%@”.";
 "The image could not be read." = "Impossibile leggere l’immagine.";
@@ -155,3 +156,8 @@
 "Location" = "Luogo";
 "Coordinates" = "Coordinate";
 "Altitude" = "Altitudine";
+"Video" = "Video";
+"Duration" = "Durata";
+"Frame Rate" = "Frame rate";
+"Codec" = "Codec";
+"Audio" = "Audio";

@@ -177,3 +177,25 @@ private func orientation(of url: URL) -> UInt32 {
     #expect(try Data(contentsOf: a) == Data([2]))
     #expect(!FileManager.default.fileExists(atPath: b.path))
 }
+
+// MARK: - Video
+
+@Test func videoTypesAreRecognised() {
+    #expect(FolderScanner.isPlayableVideoType(.quickTimeMovie))
+    #expect(FolderScanner.isPlayableVideoType(.mpeg4Movie))
+    #expect(!FolderScanner.isPlayableVideoType(.mp3))
+    #expect(!FolderScanner.isPlayableVideoType(.mpeg4Audio))
+    #expect(!FolderScanner.isPlayableVideoType(.jpeg))
+    #expect(!FolderScanner.isReadableImageType(.quickTimeMovie))
+}
+
+@Test func durationIsFormatted() {
+    func info(_ d: Double) -> VideoInfo {
+        VideoInfo(url: URL(fileURLWithPath: "/x.mov"), pixelSize: .zero, duration: d, frameRate: 30,
+                  codec: nil, hasAudio: false, fileSize: 0)
+    }
+    #expect(info(42).durationText == "0:42")
+    #expect(info(725).durationText == "12:05")
+    #expect(info(3723).durationText == "1:02:03")
+    #expect(VideoInfo.codecName(0x6876_6331) == "HEVC") // 'hvc1'
+}

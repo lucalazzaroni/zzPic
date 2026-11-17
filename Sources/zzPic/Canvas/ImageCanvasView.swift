@@ -1,4 +1,5 @@
 import AppKit
+import AVKit
 import ZZPicKit
 
 enum NavigationStep {
@@ -41,6 +42,9 @@ final class ImageCanvasView: NSView {
     private(set) var zoomMode: ZoomMode = .fit
     private(set) var isCropping = false
     private(set) var hasImage = false
+    private(set) var isShowingVideo = false
+    private var playerView: AVPlayerView?
+    private var videoSize: CGSize?
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -87,11 +91,13 @@ final class ImageCanvasView: NSView {
         super.setFrameSize(newSize)
         if zoomMode == .fit { applyFit() }
         updateCropGeometry()
+        layoutPlayer()
     }
 
     // MARK: - Content
 
     func display(_ image: LoadedImage?) {
+        stopVideo()
         guard let image else {
             hasImage = false
             pixelSize = .zero
@@ -106,6 +112,73 @@ final class ImageCanvasView: NSView {
                                                                 height: max(1, pixelSize.height)))
         zoomMode = .fit
         applyFit()
+    }
+
+    // MARK: - Video
+
+    func displayVideo(_ url: URL) {
+        display(nil)
+        let view = playerView ?? makePlayerView()
+        let player = AVPlayer(url: url)
+        player.actionAtItemEnd = .pause
+        view.player = player
+        videoSize = nil
+        view.alphaValue = 0          // revealed by setVideoSize once the dimensions are known
+        view.isHidden = false
+        isShowingVideo = true
+        player.play()
+    }
+
+    /// Sizes the player to the video's aspect ratio so the backdrop matches photos.
+    /// Pass nil if the size is unknown: the player then fills the canvas.
+    func setVideoSize(_ size: CGSize?) {
+        guard isShowingVideo else { return }
+        videoSize = size
+        layoutPlayer()
+        playerView?.alphaValue = 1
+    }
+
+    private func layoutPlayer() {
+        guard let playerView, isShowingVideo else { return }
+        guard let size = videoSize, size.width > 0, size.height > 0 else {
+            playerView.frame = bounds
+            return
+        }
+        let scale = min(bounds.width / size.width, bounds.height / size.height)
+        let w = (size.width * scale).rounded(), h = (size.height * scale).rounded()
+        playerView.frame = NSRect(x: ((bounds.width - w) / 2).rounded(), y: ((bounds.height - h) / 2).rounded(),
+                                  width: w, height: h)
+    }
+
+    func stopVideo() {
+        guard let playerView else { return }
+        playerView.player?.pause()
+        playerView.player = nil
+        playerView.isHidden = true
+        isShowingVideo = false
+    }
+
+    func togglePlayback() {
+        guard let player = playerView?.player else { return }
+        if player.timeControlStatus == .playing {
+            player.pause()
+        } else {
+            if let item = player.currentItem, item.currentTime() >= item.duration { player.seek(to: .zero) }
+            player.play()
+        }
+    }
+
+    private func makePlayerView() -> AVPlayerView {
+        let view = AVPlayerView(frame: bounds)
+        view.controlsStyle = .floating
+        view.videoGravity = .resizeAspect
+        view.showsFullScreenToggleButton = false
+        view.showsSharingServiceButton = false
+        view.allowsPictureInPicturePlayback = true
+        view.isHidden = true
+        addSubview(view, positioned: .above, relativeTo: scrollView)
+        playerView = view
+        return view
     }
 
     // MARK: - Zoom
@@ -257,6 +330,7 @@ final class ImageCanvasView: NSView {
         }
         guard !isCropping else { return false }
         switch event.keyCode {
+        case 49 where isShowingVideo: togglePlayback()            // space
         case 123, 116: delegate?.canvasNavigate(.previous)   // ←, page up
         case 124, 121: delegate?.canvasNavigate(.next)       // →, page down
         case 115: delegate?.canvasNavigate(.first)           // home
@@ -265,6 +339,11 @@ final class ImageCanvasView: NSView {
         default: return false
         }
         return true
+    }
+
+    /// Keys pressed while the video player has focus bubble up here.
+    override func keyDown(with event: NSEvent) {
+        if !handleKey(event) { super.keyDown(with: event) }
     }
 
     // MARK: - Drag & drop (into the window)

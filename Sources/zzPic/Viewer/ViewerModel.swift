@@ -59,6 +59,7 @@ final class ViewerModel {
     var files: [URL] = []
     var index = 0
     var loaded: LoadedImage?
+    var video: VideoInfo?
     var loadError: String?
     var showSpinner = false
 
@@ -89,6 +90,14 @@ final class ViewerModel {
         guard let loaded, let current, loaded.url.isSameFile(as: current) else { return nil }
         return loaded
     }
+
+    /// Info about the current file if it is a video (nil while it loads).
+    var currentVideo: VideoInfo? {
+        guard let video, let current, video.url.isSameFile(as: current) else { return nil }
+        return video
+    }
+
+    var currentIsVideo: Bool { current.map(FolderScanner.isVideoFile) ?? false }
 
     var canEdit: Bool { currentImage.map { !$0.isAnimated } ?? false }
 
