@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>it</string>
+	</array>
+	<key>CFBundleDisplayName</key>
+	<string>zzPic</string>
+	<key>CFBundleName</key>
+	<string>zzPic</string>
+	<key>CFBundleExecutable</key>
+	<string>zzPic</string>
+	<key>CFBundleIdentifier</key>
+	<string>io.github.lucalazzaroni.zzPic</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>__VERSION__</string>
+	<key>CFBundleVersion</key>
+	<string>__BUILD__</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.photography</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSSupportsAutomaticGraphicsSwitching</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>© 2026 Luca Lazzaroni · MIT License</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Image</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.image</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Folder</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.folder</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>zzPic lists the other images in the folder so you can browse them.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>zzPic lists the other images in the folder so you can browse them.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>zzPic lists the other images in the folder so you can browse them.</string>
+	<key>NSRemovableVolumesUsageDescription</key>
+	<string>zzPic lists the other images in the folder so you can browse them.</string>
+	<key>NSNetworkVolumesUsageDescription</key>
+	<string>zzPic lists the other images in the folder so you can browse them.</string>
+</dict>
+</plist>

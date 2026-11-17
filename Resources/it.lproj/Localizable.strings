@@ -1,0 +1,157 @@
+/* zzPic — Italian localization. Keys are the English strings. */
+
+/* App menu */
+"About %@" = "Informazioni su %@";
+"Services" = "Servizi";
+"Hide %@" = "Nascondi %@";
+"Hide Others" = "Nascondi altre";
+"Show All" = "Mostra tutte";
+"Quit %@" = "Esci da %@";
+"A fast, minimal image viewer for macOS." = "Un visualizzatore di immagini veloce ed essenziale per macOS.";
+
+/* File menu */
+"File" = "Archivio";
+"Open…" = "Apri…";
+"Open Recent" = "Apri recenti";
+"Clear Menu" = "Cancella menu";
+"Close" = "Chiudi";
+"Duplicate" = "Duplica";
+"Move to Trash" = "Sposta nel Cestino";
+"Show in Finder" = "Mostra nel Finder";
+"Edit in Preview" = "Modifica in Anteprima";
+"Print…" = "Stampa…";
+"Print" = "Stampa";
+"Choose an image, or a folder of images" = "Scegli un’immagine o una cartella di immagini";
+"Open" = "Apri";
+
+/* Edit menu */
+"Edit" = "Composizione";
+"Undo" = "Annulla";
+"Redo" = "Ripristina";
+"Copy" = "Copia";
+
+/* Image menu */
+"Image" = "Immagine";
+"Rotate Left" = "Ruota a sinistra";
+"Rotate Right" = "Ruota a destra";
+"Rotate" = "Ruota";
+"Crop…" = "Ritaglia…";
+"Crop" = "Ritaglia";
+"Cancel Crop" = "Annulla ritaglio";
+"Resize…" = "Ridimensiona…";
+"Resize" = "Ridimensiona";
+
+/* View menu */
+"View" = "Vista";
+"Zoom In" = "Ingrandisci";
+"Zoom Out" = "Riduci";
+"Actual Size" = "Dimensioni reali";
+"Zoom to Fit" = "Adatta alla finestra";
+"Sort By" = "Ordina per";
+"Name" = "Nome";
+"Date Modified" = "Data di modifica";
+"Size" = "Dimensione";
+"Show Filmstrip" = "Mostra miniature";
+"Hide Filmstrip" = "Nascondi miniature";
+"Filmstrip" = "Miniature";
+"Show Info" = "Mostra info";
+"Hide Info" = "Nascondi info";
+"Info" = "Info";
+"Enter Full Screen" = "Entra in modalità a tutto schermo";
+
+/* Go menu */
+"Go" = "Vai";
+"Previous Image" = "Immagine precedente";
+"Next Image" = "Immagine successiva";
+"First Image" = "Prima immagine";
+"Last Image" = "Ultima immagine";
+"Previous" = "Precedente";
+"Next" = "Successiva";
+"Navigate" = "Naviga";
+
+/* Window & Help */
+"Window" = "Finestra";
+"Minimize" = "Contrai";
+"Zoom" = "Zoom";
+"Bring All to Front" = "Porta tutto in primo piano";
+"Help" = "Aiuto";
+"%@ on GitHub" = "%@ su GitHub";
+
+/* Toolbar */
+"Share" = "Condividi";
+
+/* Window title */
+"%ld of %ld" = "%ld di %ld";
+"No images" = "Nessuna immagine";
+"Fit · %ld%%" = "Adatta · %ld%%";
+
+/* Empty state */
+"Open Image…" = "Apri immagine…";
+"Open a picture to browse every image in its folder." = "Apri una foto per sfogliare tutte le immagini della sua cartella.";
+"or drop an image or a folder here" = "oppure trascina qui un’immagine o una cartella";
+
+/* Crop */
+"Aspect Ratio" = "Proporzioni";
+"Freeform" = "Libero";
+"Original" = "Originale";
+"Square" = "Quadrato";
+"Swap Orientation" = "Inverti orientamento";
+"Save as Copy" = "Salva come copia";
+"Cancel" = "Annulla";
+
+/* Resize */
+"Resize Image" = "Ridimensiona immagine";
+"Current size: %ld × %ld px" = "Dimensioni attuali: %ld × %ld px";
+"Width:" = "Larghezza:";
+"Height:" = "Altezza:";
+"Keep proportions" = "Mantieni proporzioni";
+"Longest side" = "Lato lungo";
+
+/* Feedback */
+"copy" = "copia";
+"Copied" = "Copiata negli appunti";
+"Image cropped" = "Immagine ritagliata";
+"Image resized" = "Immagine ridimensionata";
+"Saved as “%@”" = "Salvata come “%@”";
+"Duplicated as “%@”" = "Duplicata come “%@”";
+"“%@” moved to the Trash" = "“%@” spostata nel Cestino";
+"“%@” can’t be moved to the Trash." = "Impossibile spostare “%@” nel Cestino.";
+"Do you want to delete it immediately? This can’t be undone." = "Vuoi eliminarla subito? L’operazione non può essere annullata.";
+"Delete" = "Elimina";
+
+/* Errors */
+"“%@” isn’t an image zzPic can open." = "“%@” non è un’immagine che zzPic può aprire.";
+"zzPic opens common image formats such as JPEG, PNG, HEIC, GIF, TIFF, WebP and camera RAW files." = "zzPic apre i formati più comuni, come JPEG, PNG, HEIC, GIF, TIFF, WebP e i file RAW delle fotocamere.";
+"“%@” can’t be opened because it isn’t a supported image." = "Impossibile aprire “%@”: il formato non è supportato.";
+"“%@” could not be saved." = "Impossibile salvare “%@”.";
+"The image could not be read." = "Impossibile leggere l’immagine.";
+"The edited image could not be created." = "Impossibile creare l’immagine modificata.";
+
+/* Inspector */
+"General" = "Generali";
+"Kind" = "Tipo";
+"Created" = "Creazione";
+"Modified" = "Modifica";
+"Where" = "Posizione";
+"Dimensions" = "Dimensioni";
+"Color" = "Colore";
+"%@, %ld bit" = "%@, %ld bit";
+"Profile" = "Profilo";
+"Resolution" = "Risoluzione";
+"Transparency" = "Trasparenza";
+"Yes" = "Sì";
+"No" = "No";
+"Camera" = "Fotocamera";
+"Model" = "Modello";
+"Lens" = "Obiettivo";
+"Taken" = "Scattata il";
+"Focal Length" = "Lunghezza focale";
+"(%ld mm equiv.)" = "(equiv. %ld mm)";
+"Aperture" = "Apertura";
+"Exposure" = "Esposizione";
+"Flash" = "Flash";
+"Fired" = "Scattato";
+"Off" = "Spento";
+"Location" = "Luogo";
+"Coordinates" = "Coordinate";
+"Altitude" = "Altitudine";
