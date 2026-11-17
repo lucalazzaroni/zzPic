@@ -18,7 +18,7 @@ APP=build/zzPic.app
 
 binaries=()
 for arch in $ARCHS; do
-  echo "▸ Building $arch…"
+  echo "▸ Building ${arch}…"
   swift build -c "$CONFIG" --triple "$arch-apple-macosx14.0" --scratch-path ".build/$arch"
   binaries+=("$(swift build -c "$CONFIG" --triple "$arch-apple-macosx14.0" --scratch-path ".build/$arch" --show-bin-path)/zzPic")
 done
